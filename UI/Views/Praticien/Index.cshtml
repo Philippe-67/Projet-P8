@@ -1,0 +1,95 @@
+﻿@* @model IEnumerable<UI.Models.Praticien>
+<h2>Liste des Praticiens</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+
+            <th>Specialité</th>
+            <th>Nom du Praticien</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var praticien in Model)
+        {
+            <tr>
+                <td>@Html.DisplayFor(modelItem =>praticien.Specialite)</td>
+                <td>@Html.DisplayFor(modelItem =>praticien.NomPraticien)</td>
+            </tr>
+        }
+    </tbody>
+</table>
+ *@
+@*  ------------------------------------------------------------------------------------------------ *@
+@model List<Praticien>
+
+@{
+    ViewData["Title"] = "Liste des Praticiens";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<form method="get">
+    <label for="praticienDropdown">Sélectionner un praticien : </label>
+    <select id="praticienDropdown" name="praticienId">
+        <option value="">Tous les praticiens</option>
+        @foreach (var praticien in ViewBag.PraticienList)
+        {
+            <option value="@praticien.Id">@praticien.NomPraticien</option>
+        }
+    </select>
+    <input type="submit" value="Filtrer">
+</form>
+@if (Model != null && Model.Any())
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Nom</th>
+                <th>Spécialité</th>
+                <!-- Ajoutez d'autres colonnes selon les propriétés de votre modèle Praticien -->
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var praticien in Model)
+            {
+                <tr>
+                    <td>@praticien.Id</td>
+                    <td>@praticien.NomPraticien</td>
+                    <td>@praticien.Specialite</td>
+                    <!-- Ajoutez d'autres cellules selon les propriétés de votre modèle Praticien -->
+                </tr>
+            }
+        </tbody>
+    </table>
+    <input type="submit" value="Voir les rendez-vous">
+    <!-- Afficher les rendez-vous du praticien sélectionné                                        -->
+    @if (ViewBag.SelectedPraticien != null && ViewBag.SelectedRdvList != null && ViewBag.SelectedRdvList.Any())
+    {
+        <h2>Rendez-vous du praticien : @ViewBag.SelectedPraticien.NomPraticien
+        </h2>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Nom du patient</th>
+                    <th>Date</th>
+                    <!-- Ajoutez d'autres colonnes selon les propriétés de votre modèle Rdv -->
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var rdv in ViewBag.SelectedRdvList)
+                {
+                    <tr>
+                        <td>@rdv.Id</td>
+                        <td>@rdv.NomPatient</td>
+                        <td>@rdv.Date</td>
+                        <!-- Ajoutez d'autres cellules selon les propriétés de votre modèle Rdv -->
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    
+}
