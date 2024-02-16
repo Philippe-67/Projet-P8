@@ -21,7 +21,7 @@
 </table>
  *@
 @*  ------------------------------------------------------------------------------------------------ *@
-@model List<Praticien>
+@model UI.ViewModels.PraticienViewModel
 
 @{
     ViewData["Title"] = "Liste des Praticiens";
@@ -33,16 +33,16 @@
     <label for="praticienDropdown">Sélectionner un praticien : </label>
     <select id="praticienDropdown" name="praticienId">
         <option value="">Tous les praticiens</option>
-        @foreach (var praticien in ViewBag.PraticienList)
+        @foreach (var praticien in Model.PraticienList)
         {
             <option value="@praticien.Id">@praticien.NomPraticien</option>
         }
     </select>
-    <input type="submit" value="Filtrer">
+    <input type="submit" value="Valider">
 </form>
-@if (Model != null && Model.Any())
+@if (Model != null && Model.PraticienList != null && Model.PraticienList.Any())
 {
-    <table class="table">
+   @*  <table class="table">
         <thead>
             <tr>
                 <th>Id</th>
@@ -52,7 +52,7 @@
             </tr>
         </thead>
         <tbody>
-            @foreach (var praticien in Model)
+            @foreach (var praticien in Model.PraticienList)
             {
                 <tr>
                     <td>@praticien.Id</td>
@@ -62,12 +62,14 @@
                 </tr>
             }
         </tbody>
-    </table>
-    <input type="submit" value="Voir les rendez-vous">
+    </table> *@
+    //<input type="submit" value="Voir les rendez-vous">
     <!-- Afficher les rendez-vous du praticien sélectionné                                        -->
-    @if (ViewBag.SelectedPraticien != null && ViewBag.SelectedRdvList != null && ViewBag.SelectedRdvList.Any())
-    {
-        <h2>Rendez-vous du praticien : @ViewBag.SelectedPraticien.NomPraticien
+   @*  @if (ViewBag.SelectedPraticien != null && ViewBag.SelectedRdvList != null && ViewBag.SelectedRdvList.Any()) *@
+        @if (Model.SelectedPraticien != null && Model.SelectedRdvList != null && Model.SelectedRdvList.Any())
+
+        {
+        <h2>Rendez-vous du praticien :  Dr @Model.SelectedPraticien.NomPraticien <span style="margin-right: 40px;"></span> spécialiste - @Model.SelectedPraticien.Specialite
         </h2>
         <table class="table">
             <thead>
@@ -79,7 +81,7 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach (var rdv in ViewBag.SelectedRdvList)
+                @foreach (var rdv in Model.SelectedRdvList)
                 {
                     <tr>
                         <td>@rdv.Id</td>
