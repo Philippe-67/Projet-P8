@@ -42,7 +42,7 @@
 </form>
 @if (Model != null && Model.PraticienList != null && Model.PraticienList.Any())
 {
-   @*  <table class="table">
+    @*  <table class="table">
         <thead>
             <tr>
                 <th>Id</th>
@@ -63,12 +63,12 @@
             }
         </tbody>
     </table> *@
-    //<input type="submit" value="Voir les rendez-vous">
+//<input type="submit" value="Voir les rendez-vous">
     <!-- Afficher les rendez-vous du praticien sélectionné                                        -->
-   @*  @if (ViewBag.SelectedPraticien != null && ViewBag.SelectedRdvList != null && ViewBag.SelectedRdvList.Any()) *@
-        @if (Model.SelectedPraticien != null && Model.SelectedRdvList != null && Model.SelectedRdvList.Any())
+    @*  @if (ViewBag.SelectedPraticien != null && ViewBag.SelectedRdvList != null && ViewBag.SelectedRdvList.Any()) *@
+    @if (Model.SelectedPraticien != null && Model.SelectedRdvList != null && Model.SelectedRdvList.Any())
 
-        {
+    {
         <h2>Rendez-vous du praticien :  Dr @Model.SelectedPraticien.NomPraticien <span style="margin-right: 40px;"></span> spécialiste - @Model.SelectedPraticien.Specialite
         </h2>
         <table class="table">
@@ -92,6 +92,35 @@
                 }
             </tbody>
         </table>
+
+        <!DOCTYPE html>
+        <html lang='en'>
+        <head>
+            <meta charset='utf-8' />
+            <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js'></script>
+            <style>
+                #calendar {
+                    max-width: 600px; /* Définissez la nouvelle largeur maximale du calendrier */
+                    height: 600px; /* Définissez la nouvelle hauteur du calendrier */
+                    margin: 0 auto; /* Centrez le calendrier horizontalement */
+                }
+            </style>
+            <script>
+
+                document.addEventListener('DOMContentLoaded', function () {
+                    var calendarEl = document.getElementById('calendar');
+                    var calendar = new FullCalendar.Calendar(calendarEl, {
+                        initialView: 'dayGridMonth'
+                    });
+                    calendar.render();
+                });
+
+            </script>
+        </head>
+        <body>
+            <div id='calendar'></div>
+        </body>
+        </html>
+
     }
-    
 }

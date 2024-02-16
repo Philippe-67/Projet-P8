@@ -1,5 +1,6 @@
 ﻿using ApiRdv.Data;
 using ApiRdv.Models;
+using ApiRdv.Models.Rdvs;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
@@ -53,15 +54,7 @@ public class RdvController : ControllerBase
         return rdv;
     }
 
-    // POST: api/Rdv
-    [HttpPost]
-    public async Task<ActionResult<Rdv>> CreateRdv(Rdv rdv)
-    {
-        _context.Rdvs.Add(rdv);
-        await _context.SaveChangesAsync();
-
-        return CreatedAtAction("GetRdv", new { id = rdv.Id }, rdv);
-    }
+   
 
     // PUT: api/Rdv/5
     [HttpPut("{id}")]
@@ -107,6 +100,41 @@ public class RdvController : ControllerBase
         await _context.SaveChangesAsync();
 
         return NoContent();
+    }
+
+    //ction pour récupérer les rendez-vous d'un praticien en utilisant le calendrier.
+    [HttpGet("Calendrier/{calendrierId}")]
+    public async Task<ActionResult<IEnumerable<Rdv>>> GetRdvsByCalendrier(int calendrierId)
+    {
+        var rdvs = await _context.Rdvs.Where(r => r.CalendrierId == calendrierId).ToListAsync();
+
+        if (!rdvs.Any())
+        {
+            return NotFound();
+        }
+
+        return rdvs;
+    }
+
+    [HttpPost]
+    public async Task<ActionResult<Rdv>> CreateRdv(Rdv rdv)
+    {
+        // Vérifiez si le praticien a déjà un calendrier, sinon créez-en un
+        var calendrier = await _context.Calendriers
+            .FirstOrDefaultAsync(c => c.IdPraticien == rdv.IdPraticien);
+
+        if (calendrier == null)
+        {
+            calendrier = new Calendrier { IdPraticien = rdv.IdPraticien };
+            _context.Calendriers.Add(calendrier);
+        }
+
+        rdv.CalendrierId = calendrier.Id;
+
+        _context.Rdvs.Add(rdv);
+        await _context.SaveChangesAsync();
+
+        return CreatedAtAction("GetRdv", new { id = rdv.Id }, rdv);
     }
 
     private bool RdvExists(int id)

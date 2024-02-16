@@ -1,6 +1,6 @@
-﻿//using Microsoft.AspNetCore.Mvc;
+﻿//using Microsoft.AspNetCore.Mvc;//public class PraticienController : Controller
+
 //using UI.Models;
-//public class PraticienController : Controller
 //{
 //    private readonly HttpClient _httpClient;
 

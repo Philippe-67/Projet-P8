@@ -1,4 +1,5 @@
 ﻿using ApiRdv.Models;
+using ApiRdv.Models.Rdvs;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Reflection.Emit;
@@ -12,6 +13,8 @@ namespace ApiRdv.Data
         }
        
         public DbSet<Rdv> Rdvs { get; set; }
+        public DbSet<Calendrier> Calendriers { get; set; }
+        public object Praticiens { get; internal set; }
 
         // Vous pouvez ajouter d'autres DbSets pour d'autres entités...
 

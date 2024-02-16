@@ -1,4 +1,4 @@
-﻿namespace ApiPraticien.Models
+﻿namespace ApiPraticien.Models.Praticien
 {
     public class Praticien
     {
@@ -6,5 +6,6 @@
         public string NomPraticien { get; set; }
         public string Specialite { get; set; }
        
+
     }
 }

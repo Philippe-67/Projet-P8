@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ApiPraticien.Models;
+using ApiPraticien.Models.Praticien;
 
 [Route("api/[controller]")]
 [ApiController]
