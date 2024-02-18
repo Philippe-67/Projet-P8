@@ -8,7 +8,7 @@
         public string NomPraticien { get; set; }
         public DateTime Date { get; set; }
         public int IdPraticien { get; set; }
-        public int CalendrierId { get; set; }
+        
         
     }
 }

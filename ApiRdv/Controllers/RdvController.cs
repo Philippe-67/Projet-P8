@@ -101,41 +101,17 @@ public class RdvController : ControllerBase
 
         return NoContent();
     }
-
-    //ction pour récupérer les rendez-vous d'un praticien en utilisant le calendrier.
-    [HttpGet("Calendrier/{calendrierId}")]
-    public async Task<ActionResult<IEnumerable<Rdv>>> GetRdvsByCalendrier(int calendrierId)
-    {
-        var rdvs = await _context.Rdvs.Where(r => r.CalendrierId == calendrierId).ToListAsync();
-
-        if (!rdvs.Any())
-        {
-            return NotFound();
-        }
-
-        return rdvs;
-    }
-
+    // POST: api/Rdv
     [HttpPost]
     public async Task<ActionResult<Rdv>> CreateRdv(Rdv rdv)
     {
-        // Vérifiez si le praticien a déjà un calendrier, sinon créez-en un
-        var calendrier = await _context.Calendriers
-            .FirstOrDefaultAsync(c => c.IdPraticien == rdv.IdPraticien);
-
-        if (calendrier == null)
-        {
-            calendrier = new Calendrier { IdPraticien = rdv.IdPraticien };
-            _context.Calendriers.Add(calendrier);
-        }
-
-        rdv.CalendrierId = calendrier.Id;
-
         _context.Rdvs.Add(rdv);
         await _context.SaveChangesAsync();
 
-        return CreatedAtAction("GetRdv", new { id = rdv.Id }, rdv);
+        return CreatedAtAction(nameof(GetRdv), new { id = rdv.Id }, rdv);
     }
+
+
 
     private bool RdvExists(int id)
     {

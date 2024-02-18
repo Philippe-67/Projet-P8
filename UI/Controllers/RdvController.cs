@@ -23,6 +23,19 @@ public class RdvController : Controller
         return View();
     }
 
+    //[HttpPost]
+    //public async Task<IActionResult> Create(Rdv rdv)
+    //{
+    //    try
+    //    {
+    //        await CreateRendezVousAsync(rdv);
+    //        return RedirectToAction("Index");
+    //    }
+    //    catch (Exception ex)
+    //    {
+    //        return View("Error", ex.Message);
+    //    }
+    //}
     [HttpPost]
     public async Task<IActionResult> Create(Rdv rdv)
     {
@@ -36,7 +49,6 @@ public class RdvController : Controller
             return View("Error", ex.Message);
         }
     }
-
     // Ajoutez d'autres actions selon les besoins de votre application
 
     private async Task CreateRendezVousAsync(Rdv rdv)
