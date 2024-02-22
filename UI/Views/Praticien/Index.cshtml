@@ -26,7 +26,8 @@
                 <td>@praticien.Specialite</td>
                 <td>
                     <a href="@Url.Action("Create", "Rdv", new { praticienId = praticien.Id, nomPraticien = praticien.NomPraticien })" class="btn btn-primary">Prendre un rendez-vous</a>
-                     @* <form method="post" action="@Url.Action("Create", "Rdv")">
+                    <a href="@Url.Action("Index", "Rdv", new { nomPraticien = praticien.NomPraticien})" class="btn btn-primary">agenda</a>
+                    @* <form method="post" action="@Url.Action("Create", "Rdv")">
                         <input type="hidden" name="praticienId" value="@praticien.Id" />
                         <input type="hidden" name="nomPraticien" value="@praticien.NomPraticien" />
                         <button type="submit" class="btn btn-primary">Prendre un rendez-vous</button> *@

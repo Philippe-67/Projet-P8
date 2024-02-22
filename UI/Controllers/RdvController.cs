@@ -15,8 +15,9 @@ public class RdvController : Controller
     }
 
    
-    public async Task<IActionResult> Index()
+    public async Task<IActionResult> Index(string nomPraticien)
     {
+        ViewData["NomPraticien"] = nomPraticien;
         try
         {
             HttpResponseMessage response = await _httpClient.GetAsync("/api/Rdv");
@@ -27,6 +28,13 @@ public class RdvController : Controller
                 string responseData = await response.Content.ReadAsStringAsync();
                 // Désérialise la chaîne JSON en une liste d'objets
                 var listeRdvs = JsonConvert.DeserializeObject<List<Rdv>>(responseData);
+
+                // Filtrer les rendez-vous en fonction de nomPraticien
+                if (!string.IsNullOrEmpty(nomPraticien))
+                {
+                    listeRdvs = listeRdvs.Where(rdv => rdv.NomPraticien == nomPraticien).ToList();
+                }
+
                 // Utilise les données comme nécessaire, peut-être passer à la vue
                 ViewBag.Rdvs = listeRdvs;
                 return View();
