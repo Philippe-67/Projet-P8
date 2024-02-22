@@ -1,9 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
+using System.Text;
 using UI.Models;
 
 public class RdvController : Controller
 {
     private readonly HttpClient _httpClient;
+
 
     public RdvController(IHttpClientFactory httpClientFactory)
     {
@@ -11,10 +14,32 @@ public class RdvController : Controller
         _httpClient.BaseAddress = new Uri("https://localhost:5001"); // Assurez-vous de mettre le bon port pour votre API Rdv
     }
 
-    public IActionResult Index()
+   
+    public async Task<IActionResult> Index()
     {
-        // Code pour afficher la liste des rendez-vous
-        return View();
+        try
+        {
+            HttpResponseMessage response = await _httpClient.GetAsync("/api/Rdv");
+
+            if (response.IsSuccessStatusCode)
+            {
+                // Lecture et traitement des données
+                string responseData = await response.Content.ReadAsStringAsync();
+                // Désérialise la chaîne JSON en une liste d'objets
+                var listeRdvs = JsonConvert.DeserializeObject<List<Rdv>>(responseData);
+                // Utilise les données comme nécessaire, peut-être passer à la vue
+                ViewBag.Rdvs = listeRdvs;
+                return View();
+            }
+            else
+            {
+                return StatusCode((int)response.StatusCode, $"Erreur HTTP: {response.StatusCode}");
+            }
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, $"Erreur lors de la requête : {ex.Message}");
+        }
     }
 
     public IActionResult Create()
@@ -23,19 +48,7 @@ public class RdvController : Controller
         return View();
     }
 
-    //[HttpPost]
-    //public async Task<IActionResult> Create(Rdv rdv)
-    //{
-    //    try
-    //    {
-    //        await CreateRendezVousAsync(rdv);
-    //        return RedirectToAction("Index");
-    //    }
-    //    catch (Exception ex)
-    //    {
-    //        return View("Error", ex.Message);
-    //    }
-    //}
+   
     [HttpPost]
     public async Task<IActionResult> Create(Rdv rdv)
     {
@@ -61,5 +74,8 @@ public class RdvController : Controller
             throw new Exception(errorMessage);
         }
     }
+ 
 }
+
+
 

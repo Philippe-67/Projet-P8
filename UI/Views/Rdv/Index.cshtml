@@ -1,5 +1,32 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model UI.Models.Rdv
+
 @{
+    ViewData["Title"] = "Liste des Rendez-vous";
 }
+
+<h1>@ViewData["Title"]</h1>
+
+
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Nom du Praticien</th>
+            <th>Date</th>
+            <th>Patient</th>
+            
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var rdv in ViewBag.rdvs)
+        {
+            <tr>
+                <td>@rdv.Id</td>
+                <td>@rdv.NomPraticien</td>
+                <td>@rdv.Date</td>
+                <td>@rdv.NomPatient</td>
+            </tr>
+        }
+    </tbody>
+</table>
