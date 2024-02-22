@@ -42,8 +42,10 @@ public class RdvController : Controller
         }
     }
 
-    public IActionResult Create()
+    public IActionResult Create(int praticienId, string nomPraticien)
     {
+        ViewData["PraticienId"] = praticienId;
+        ViewData["NomPraticien"] = nomPraticien;
         // Affiche le formulaire de création de rendez-vous
         return View();
     }

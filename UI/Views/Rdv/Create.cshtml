@@ -1,6 +1,8 @@
 ﻿@model UI.Models.Rdv
 
 <h2>Créer un rendez-vous</h2>
+<p>Praticien ID: @ViewData["PraticienId"]</p>
+<p>Nom du Praticien: @ViewData["NomPraticien"]</p>
 
 <form asp-action="Create" method="post" enctype="application/json">
     <div class="form-group">
