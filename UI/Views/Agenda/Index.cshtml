@@ -1,0 +1,11 @@
+﻿@model UI.Models.JourViewModel
+
+<h2>Agenda</h2>
+
+@using (Html.BeginForm("AfficherAgenda", "Agenda", FormMethod.Post))
+{
+    <div>
+        <label for="moisSelectionne">Sélectionnez un mois :</label>
+        @Html.DropDownList("moisSelectionne", (IEnumerable<SelectListItem>)ViewBag.MoisListe, new { onchange = "this.form.submit();" })
+    </div>
+}

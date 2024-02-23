@@ -1,7 +1,7 @@
 ﻿@model UI.Models.Rdv
 
 @{
-    ViewData["Title"] = "Liste des Rendez-vous";
+    ViewData["Title"] = "Liste des Rendez-vous du Dr "+ @ViewData["NomPraticien"] ;
 }
 
 <h1>@ViewData["Title"]</h1>
@@ -11,10 +11,10 @@
 <table class="table">
     <thead>
         <tr>
-            <th>ID</th>
+          @*   <th>ID</th> *@
             <th>Nom du Praticien</th>
             <th>Date</th>
-            <th>Patient</th>
+            @* <th>Patient</th> *@
             
         </tr>
     </thead>
@@ -22,10 +22,10 @@
         @foreach (var rdv in ViewBag.rdvs)
         {
             <tr>
-                <td>@rdv.Id</td>
+                @* <td>@rdv.Id</td> *@
                 <td>@rdv.NomPraticien</td>
                 <td>@rdv.Date</td>
-                <td>@rdv.NomPatient</td>
+                @* <td>@rdv.NomPatient</td> *@
             </tr>
         }
     </tbody>

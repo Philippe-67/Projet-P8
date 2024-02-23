@@ -34,6 +34,9 @@ public class RdvController : Controller
                 {
                     listeRdvs = listeRdvs.Where(rdv => rdv.NomPraticien == nomPraticien).ToList();
                 }
+                // Trier les rendez-vous par ordre chronologique
+                listeRdvs = listeRdvs.OrderBy(rdv => rdv.Date).ToList();
+
 
                 // Utilise les données comme nécessaire, peut-être passer à la vue
                 ViewBag.Rdvs = listeRdvs;
