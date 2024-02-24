@@ -8,6 +8,16 @@
 
 <p>Filtre par Nom du Praticien: @ViewData["NomPraticien"]</p>
 
+<form method="get" asp-action="Index">
+    <label for="Annee">Année :</label>
+    @Html.DropDownList("annee", (SelectList)ViewBag.Annees, new { onchange = "this.form.submit()" })
+
+    <label for="Mois">Mois :</label>
+    @Html.DropDownList("mois", (SelectList)ViewBag.Mois, new { onchange = "this.form.submit()" })
+</form>
+<p>Nombre de jours dans le mois sélectionné : @ViewBag.NombreDeJoursDansMois</p>
+
+
 <table class="table">
     <thead>
         <tr>
@@ -24,7 +34,7 @@
             <tr>
                 @* <td>@rdv.Id</td> *@
                 <td>@rdv.NomPraticien</td>
-                <td>@rdv.Date</td>
+                <td>@rdv.Date.ToString("dddd, dd  MMMM yyyy")</td>
                 @* <td>@rdv.NomPatient</td> *@
             </tr>
         }
