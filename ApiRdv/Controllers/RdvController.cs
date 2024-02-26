@@ -145,7 +145,26 @@ public class RdvController : ControllerBase
     //    }
     //}
 
+    // DELETE: api/Rdv/5
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> DeleteRdv(int id)
+    {
+        var rdv = await _context.Rdvs.FindAsync(id);
+        if (rdv == null)
+        {
+            return NotFound();
+        }
 
+        _context.Rdvs.Remove(rdv);
+        await _context.SaveChangesAsync();
+
+        return NoContent();
+    }
+
+    //private bool PraticienExists(int id)
+    //{
+    //    return _context.Praticiens.Any(e => e.Id == id);
+    //}
 
     private bool RdvExists(int id)
     {

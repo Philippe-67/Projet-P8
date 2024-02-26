@@ -1,7 +1,7 @@
 ﻿@model UI.Models.Rdv
 
 @{
-    ViewData["Title"] = "Liste des Rendez-vous du Dr "+ @ViewData["NomPraticien"] ;
+    ViewData["Title"] = "Liste des Rendez-vous du Dr " + @ViewData["NomPraticien"] + @ViewData["PraticienId"];
 }
 
 <h1>@ViewData["Title"]</h1>
@@ -15,16 +15,16 @@
     <label for="Mois">Mois :</label>
     @Html.DropDownList("mois", (SelectList)ViewBag.Mois, new { onchange = "this.form.submit()" })
 </form>
-<p>Nombre de jours dans le mois sélectionné : @ViewBag.NombreDeJoursDansMois</p>
+@* @* <p>Nombre de jours dans le mois sélectionné : @ViewBag.NombreDeJoursDansMois</p>
 
 
 <table class="table">
     <thead>
         <tr>
-          @*   <th>ID</th> *@
+          @*   <th>ID</th> 
             <th>Nom du Praticien</th>
             <th>Date</th>
-            @* <th>Patient</th> *@
+            @* <th>Patient</th> 
             
         </tr>
     </thead>
@@ -32,11 +32,41 @@
         @foreach (var rdv in ViewBag.rdvs)
         {
             <tr>
-                @* <td>@rdv.Id</td> *@
+                @* <td>@rdv.Id</td> 
                 <td>@rdv.NomPraticien</td>
                 <td>@rdv.Date.ToString("dddd, dd  MMMM yyyy")</td>
-                @* <td>@rdv.NomPatient</td> *@
+                @* <td>@rdv.NomPatient</td> 
             </tr>
+        }
+    </tbody>
+  </table>*@
+<h3>Jours disponibles :</h3>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Jour</th>
+            <th>Date</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var jourDisponible in ViewBag.JoursDisponibles)
+        {
+            if (jourDisponible >= DateTime.Now.Date)
+            {
+                <tr>
+                    <td>@jourDisponible.ToString("dddd")</td> <!-- Affiche le nom du jour -->
+                     <td>@jourDisponible.ToString("dd/MM/yyyy")</td> <!-- Affiche la date -->
+                <td>
+                        <a href="@Url.Action("Create", "Rdv", new { jourDisponible= @jourDisponible, praticienId = @ViewData["PraticienId"],nomPraticien=@ViewData["NomPraticien"] })" class="btn btn-primary">Prendre un rendez-vous</a>
+                   @*  <form method="post" action="/Rdv/Create">
+                        <input type="hidden" name="nomPraticien" value="@ViewData["NomPraticien"]" />
+                         <input type="hidden" name="Date" value="@jourDisponible.ToString("yyyy-MM-dd")" />
+                         <button type="submit">Prendre rendez-vous</button>
+                    </form> *@
+                </td>
+             </tr>
+             }
         }
     </tbody>
 </table>

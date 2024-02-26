@@ -25,8 +25,8 @@
                 <td>@praticien.NomPraticien</td>
                 <td>@praticien.Specialite</td>
                 <td>
-                    <a href="@Url.Action("Create", "Rdv", new { praticienId = praticien.Id, nomPraticien = praticien.NomPraticien })" class="btn btn-primary">Prendre un rendez-vous</a>
-                    <a href="@Url.Action("Index", "Rdv", new { nomPraticien = praticien.NomPraticien})" class="btn btn-primary">agenda</a>
+                     <a href="@Url.Action("Create", "Rdv", new { praticienId = praticien.Id, nomPraticien = praticien.NomPraticien })" class="btn btn-primary">Prendre un rendez-vous</a>
+                     <a href="@Url.Action("Index", "Rdv", new {  praticienId = praticien.Id, nomPraticien = praticien.NomPraticien})" class="btn btn-primary">agenda</a>
                 </td>
             </tr>
         }

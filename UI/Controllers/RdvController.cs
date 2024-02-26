@@ -16,9 +16,12 @@ public class RdvController : Controller
     }
 
    
-    public async Task<IActionResult> Index(string nomPraticien, int? annee, int? mois)
+    public async Task<IActionResult> Index(string nomPraticien,int praticienId,DateTime jourDisponible ,int? annee, int? mois)
     {
         ViewData["NomPraticien"] = nomPraticien;
+        ViewData["PraticienId"] =praticienId;
+        ViewData["Date"] = jourDisponible;
+      //  ViewData["AnneeSelectionnee"] = annee;
 
         // Récupérer l'année et le mois actuels par défaut
         int anneeActuelle = DateTime.Now.Year;
@@ -34,16 +37,19 @@ public class RdvController : Controller
 
         // Calculer le nombre de jours dans le mois sélectionné
         //int nombreDeJoursDansMois = DateTime.DaysInMonth(anneeSelectionnee, moisSelectionne);
-        // Calculer le nombre de jours dans le mois sélectionné
         int nombreDeJoursDansMois = moisSelectionne == 2 && EstBissextile(anneeSelectionnee) ? 29 : DateTime.DaysInMonth(anneeSelectionnee, moisSelectionne);
 
 
         // Créer une liste de dates pour le mois sélectionné
         List<DateTime> datesDuMois = new List<DateTime>();
+        // Créer une liste de dates  disponibles pour le mois sélectionné
+        List<DateTime> joursDisponibles = new List<DateTime>();
+
         for (int jour = 1; jour <= nombreDeJoursDansMois; jour++)
         {
             DateTime date = new DateTime(anneeSelectionnee, moisSelectionne, jour);
             datesDuMois.Add(date);
+            joursDisponibles.Add(date);
         }
 
         //  ViewBag.Rdvs = listeRdvs;
@@ -73,9 +79,12 @@ public class RdvController : Controller
                 // Trier les rendez-vous par ordre chronologique
                 listeRdvs = listeRdvs.OrderBy(rdv => rdv.Date).ToList();
 
+                // Filtrer les jours disponibles en fonction des rendez-vous
+                joursDisponibles = joursDisponibles.Except(listeRdvs.Select(rdv => rdv.Date.Date)).ToList();
 
                 // Utilise les données comme nécessaire, peut-être passer à la vue
                 ViewBag.Rdvs = listeRdvs;
+                ViewBag.JoursDisponibles = joursDisponibles;
                 return View();
             }
             else
@@ -93,26 +102,44 @@ public class RdvController : Controller
         return (annee % 4 == 0 && annee % 100 != 0) || (annee % 400 == 0);
     }
 
-    public IActionResult Create(int praticienId, string nomPraticien)
+    //public IActionResult Create(int praticienId, string nomPraticien)
+
+    //{
+    //    ViewData["PraticienId"] = praticienId;
+    //    ViewData["NomPraticien"] = nomPraticien;
+    //    // Affiche le formulaire de création de rendez-vous
+    //    return View();
+    //}
+   
+    public IActionResult Create( DateTime jourDisponible, int praticienId,string nomPraticien)
+
     {
         ViewData["PraticienId"] = praticienId;
-        ViewData["NomPraticien"] = nomPraticien;
+        ViewData["NomPraticien"] =nomPraticien;
+        ViewData["Date"] = jourDisponible;
         // Affiche le formulaire de création de rendez-vous
         return View();
     }
 
-   
+
     [HttpPost]
+    
     public async Task<IActionResult> Create(Rdv rdv)
     {
+       
         try
         {
             await CreateRendezVousAsync(rdv);
-            return RedirectToAction("Index");
+            ViewData["PraticienId"] = rdv.Id;
+            ViewData["NomPraticien"] = rdv.NomPraticien;
+          
+            // return RedirectToAction("Index");
+            return View("Index");
         }
         catch (Exception ex)
         {
             return View("Error", ex.Message);
+
         }
     }
     // Ajoutez d'autres actions selon les besoins de votre application
