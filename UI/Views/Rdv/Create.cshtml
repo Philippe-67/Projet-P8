@@ -3,7 +3,11 @@
 <h2>Créer un rendez-vous</h2>
 <p>Praticien ID: @ViewData["PraticienId"]</p>
 <p>Nom du Praticien: @ViewData["NomPraticien"]</p>
-<p>jour disponible choisi :@ViewData["Date"]</p>
+@* <p>jour disponible choisi :@ViewData["Date"]</p>
+ *@
+
+<p>jour disponible choisi :@(((DateTime)ViewData["Date"]).ToString("dd/MM/yyyy"))</p>
+
 
 
 <form asp-action="Create" method="post" enctype="application/json">
@@ -19,14 +23,9 @@
         <span asp-validation-for="NomPraticien" class="text-danger"></span>
     </div>
 
-
-    @{
-        string dateISO8601 = ((DateTime)ViewData["Date"]).ToString("yyyy-MM-dd");
-    }
-
     <div class="form-group">
         <label asp-for="Date">Date du Rendez-vous</label>
-        <input asp-for="Date" type="date" class="form-control" value="@dateISO8601" />
+        <input asp-for="Date" type="datetime-local" class="form-control" />
         <span asp-validation-for="Date" class="text-danger"></span>
     </div>
 
