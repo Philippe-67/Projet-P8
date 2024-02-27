@@ -9,6 +9,8 @@
 <p>Filtre par Nom du Praticien: @ViewData["NomPraticien"]</p>
 
 <form method="get" asp-action="Index">
+    <input type="hidden" name="PraticienId" value="@ViewData["PraticienId"]">
+    <input type="hidden" name="NomPraticien" value="@ViewData["NomPraticien"]">
     <label for="Annee">Année :</label>
     @Html.DropDownList("annee", (SelectList)ViewBag.Annees, new { onchange = "this.form.submit()" })
 
@@ -52,8 +54,8 @@
     <tbody>
         @foreach (var jourDisponible in ViewBag.JoursDisponibles)
         {
-            if (jourDisponible >= DateTime.Now.Date)
-            {
+           @*  if (jourDisponible >= DateTime.Now.Date)
+            { *@
                 <tr>
                     <td>@jourDisponible.ToString("dddd")</td> <!-- Affiche le nom du jour -->
                      <td>@jourDisponible.ToString("dd/MM/yyyy")</td> <!-- Affiche la date -->
@@ -62,7 +64,15 @@
                  
                 </td>
              </tr>
-             }
+             @* } *@
+           
         }
+        
     </tbody>
+    @if (!string.IsNullOrEmpty(ViewBag.ConfirmationMessage))
+    {
+        <div class="alert alert-success">
+            @ViewBag.ConfirmationMessage
+        </div>
+    }
 </table>

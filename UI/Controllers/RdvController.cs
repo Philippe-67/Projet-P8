@@ -85,6 +85,10 @@ public class RdvController : Controller
                 // Utilise les données comme nécessaire, peut-être passer à la vue
                 ViewBag.Rdvs = listeRdvs;
                 ViewBag.JoursDisponibles = joursDisponibles;
+
+                // Récupérez le message de confirmation depuis TempData
+                ViewBag.ConfirmationMessage = TempData["ConfirmationMessage"] as string;
+
                 return View();
             }
             else
@@ -130,11 +134,26 @@ public class RdvController : Controller
         try
         {
             await CreateRendezVousAsync(rdv);
-            ViewData["PraticienId"] = rdv.Id;
-            ViewData["NomPraticien"] = rdv.NomPraticien;
-          
+            // Crée un objet de type UI.Models.Rdv avec les données nécessaires
+            UI.Models.Rdv model = new UI.Models.Rdv
+            {
+                NomPraticien = rdv.NomPraticien,
+                Id = rdv.Id,
+                Date = rdv.Date
+            };
+            // Ajoutez le message de confirmation à TempData
+            TempData["ConfirmationMessage"] = "Le rendez-vous a été enregistré avec succès.";
+
+            // Redirige vers l'action "Index" avec le modèle correct
+            return RedirectToAction("Index", model);
+            //return View("Home");
+            //  ViewData["PraticienId"] = rdv.Id;
+            //  ViewData["NomPraticien"] = rdv.NomPraticien;
+
             // return RedirectToAction("Index");
-            return View("Index");
+            //  return View("Index");
+            //  return View("Index", new VotreModelePourLaVueIndex());
+            //  return View("Index", new { nomPraticien = rdv.NomPraticien, praticienId = rdv.Id, jourDisponible = rdv.Date });
         }
         catch (Exception ex)
         {
