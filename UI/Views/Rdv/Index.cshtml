@@ -6,9 +6,10 @@
 
 <h1>@ViewData["Title"]</h1>
 
-<p>Filtre par Nom du Praticien: @ViewData["NomPraticien"]</p>
+@* <p>Filtre par Nom du Praticien: @ViewData["NomPraticien"]</p> *@
 
-<form method="get" asp-action="Index">
+<h3>
+    <form method="get" asp-action="Index">
     <input type="hidden" name="PraticienId" value="@ViewData["PraticienId"]">
     <input type="hidden" name="NomPraticien" value="@ViewData["NomPraticien"]">
     <label for="Annee">Année :</label>
@@ -16,7 +17,9 @@
 
     <label for="Mois">Mois :</label>
     @Html.DropDownList("mois", (SelectList)ViewBag.Mois, new { onchange = "this.form.submit()" })
-</form>
+    
+    </form>
+</h3>
 @* @* <p>Nombre de jours dans le mois sélectionné : @ViewBag.NombreDeJoursDansMois</p>
 
 
