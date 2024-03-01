@@ -8,6 +8,8 @@ using Microsoft.EntityFrameworkCore;
 public class RdvController : ControllerBase
 {
     private readonly RdvDbContext _context;
+    private static SemaphoreSlim _reservationSemaphore = new SemaphoreSlim(200, 200);
+    private static SemaphoreSlim _doubleBookingSemaphore = new SemaphoreSlim(1, 1);
 
     public RdvController(RdvDbContext context)
     {
@@ -33,64 +35,47 @@ public class RdvController : ControllerBase
 
         return rdv;
     }
-    // POST: api/Rdv
+    //// POST: api/Rdv
+    //[HttpPost]
+    //public async Task<ActionResult<Rdv>> Create(Rdv rdv)
+    //{
+    //    _context.Rdvs.Add(rdv);
+    //    await _context.SaveChangesAsync();
+
+    //    return CreatedAtAction(nameof(GetRdv), new { id = rdv.Id }, rdv);
+    //}   remplacé par :
     [HttpPost]
     public async Task<ActionResult<Rdv>> Create(Rdv rdv)
     {
-        _context.Rdvs.Add(rdv);
-        await _context.SaveChangesAsync();
+        await _reservationSemaphore.WaitAsync();
+        await _doubleBookingSemaphore.WaitAsync();
 
-        return CreatedAtAction(nameof(GetRdv), new { id = rdv.Id }, rdv);
+        try
+        {
+           
+            //// Logique de réservation (vérification de disponibilité, etc.)
+            //if (!IsDayAvailable(rdv.Date))
+            //{
+            //    return BadRequest("La journée spécifiée n'est pas disponible pour la réservation.");
+            //}
+
+            // Simulation d'une opération prenant moins d'une minute
+            await Task.Delay(TimeSpan.FromMinutes(0.5));
+
+            _context.Rdvs.Add(rdv);
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction(nameof(GetRdv), new { id = rdv.Id }, rdv);
+        }
+        finally
+        {
+            _doubleBookingSemaphore.Release();
+            _reservationSemaphore.Release();
+        }
     }
 
-    /// ////////////////////////////////////////////////////////////////////////////////////////////////
-
-    //[HttpGet("Praticien/{praticienId}")]
-    //public async Task<ActionResult<IEnumerable<Rdv>>> GetRdvsByPraticien(int praticienId)
-    //{
-    //    var rdvs = await _context.Rdvs.Where(r => r.Id == praticienId).ToListAsync();
-
-    //    if ( !rdvs.Any())
-    //    {
-    //        return NotFound();
-    //    }
-
-    //    return rdvs;
-    //}
 
 
-
-
-
-    //// PUT: api/Rdv/5
-    //[HttpPut("{id}")]
-    //public async Task<IActionResult> UpdateRdv(int id, Rdv rdv)
-    //{
-    //    if (id != rdv.Id)
-    //    {
-    //        return BadRequest();
-    //    }
-
-    //    _context.Entry(rdv).State = EntityState.Modified;
-
-    //    try
-    //    {
-    //        await _context.SaveChangesAsync();
-    //    }
-    //    catch (DbUpdateConcurrencyException)
-    //    {
-    //        if (!RdvExists(id))
-    //        {
-    //            return NotFound();
-    //        }
-    //        else
-    //        {
-    //            throw;
-    //        }
-    //    }
-
-    //    return NoContent();
-    //}
 
     //// DELETE: api/Rdv/5
     //[HttpDelete("{id}")]
@@ -107,45 +92,7 @@ public class RdvController : ControllerBase
 
     //    return NoContent();
     //}
-
-    ////// POST: api/Rdv
-    //[HttpPost("PrendreRendezVous")]
-    //public async Task<IActionResult> PrendreRendezVous(int praticienId,string nomPraticien, DateTime date)
-    //{
-    //    try
-    //    {
-    //        // Vérifie si le praticien existe dans la base de données
-    //        var praticienExiste = await _context.Rdvs.AnyAsync(r => r.Id == praticienId);
-
-    //        if (!praticienExiste)
-    //        {
-    //            return NotFound($"Praticien avec l'ID {praticienId} non trouvé.");
-    //        }
-    //        // Crée un nouvel objet RendezVous avec le praticienId
-    //        var rendezVous = new Rdv
-    //        {
-    //           // PraticienId = praticienId,
-    //            NomPraticien = nomPraticien,
-    //            // Ajoutez d'autres propriétés du rendez-vous si nécessaire
-    //            NomPatient = "NomPatient", // Remplacez par la valeur réelle
-    //            Date = DateTime.Now // Remplacez par la valeur réelle
-    //        };
-
-    //        // Ajoute le rendez-vous à la base de données
-    //        _context.Rdvs.Add(rendezVous);
-    //        _context.SaveChanges();
-
-    //        // Renvoie un statut Ok si tout s'est bien déroulé
-    //        return Ok("Rendez-vous pris avec succès");
-    //    }
-    //    catch (Exception ex)
-    //    {
-    //        // En cas d'échec de la prise de rendez-vous, renvoie un statut d'erreur
-    //        return StatusCode(500, $"Erreur lors de la prise de rendez-vous : {ex.Message}");
-    //    }
-    //}
-
-    // DELETE: api/Rdv/5
+    // remplacé par: 
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteRdv(int id)
     {
@@ -155,19 +102,31 @@ public class RdvController : ControllerBase
             return NotFound();
         }
 
-        _context.Rdvs.Remove(rdv);
-        await _context.SaveChangesAsync();
+        await _reservationSemaphore.WaitAsync();
+
+        try
+        {
+            _context.Rdvs.Remove(rdv);
+            await _context.SaveChangesAsync();
+        }
+        finally
+        {
+            _reservationSemaphore.Release();
+        }
 
         return NoContent();
     }
 
-    //private bool PraticienExists(int id)
-    //{
-    //    return _context.Praticiens.Any(e => e.Id == id);
-    //}
 
-    private bool RdvExists(int id)
+    private bool IsDayAvailable(DateTime date)
     {
-        return _context.Rdvs.Any(e => e.Id == id);
+        // Logique de vérification de disponibilité de la journée
+        // Par exemple, vérifier si la journée est déjà réservée
+        return !_context.Rdvs.Any(r => r.Date.Date == date.Date);
     }
 }
+
+
+
+
+  

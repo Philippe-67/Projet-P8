@@ -2,8 +2,7 @@
 
 using Microsoft.AspNetCore.Mvc;
 using UI.Models;
-
-    using Newtonsoft.Json;
+using Newtonsoft.Json;
 
 public class PraticienController : Controller
 {

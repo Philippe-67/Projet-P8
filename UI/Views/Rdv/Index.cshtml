@@ -57,8 +57,8 @@
     <tbody>
         @foreach (var jourDisponible in ViewBag.JoursDisponibles)
         {
-           @*  if (jourDisponible >= DateTime.Now.Date)
-            { *@
+            if (jourDisponible >= DateTime.Now.Date)
+            { 
                 <tr>
                     <td>@jourDisponible.ToString("dddd")</td> <!-- Affiche le nom du jour -->
                      <td>@jourDisponible.ToString("dd/MM/yyyy")</td> <!-- Affiche la date -->
@@ -67,7 +67,7 @@
                  
                 </td>
              </tr>
-             @* } *@
+              } 
            
         }
         
