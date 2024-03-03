@@ -32,12 +32,19 @@
                                 <li class=""><a href="#service">Notre offre</a></li>
                                 <li class=""><a href="#doctor-team">Notre équipe</a></li>
                                 <li class=""><a href="#contact">Nous contacter</a></li>
-                                @if (User.Identity.IsAuthenticated)
+
+                                @* <li class=""><a href="#register">Register</a></li>
+                                <li class=""><a href="#login">Login</a></li> *@
+
+@*                                 <li class=""><a href="@Url.Action("Register", "Auth")">Register</a></li>
+ *@                                <li class=""><a href="@Url.Action("Login","Auth")">Login</a></li>
+                                
+                              @*   @if (User.Identity.IsAuthenticated)
                                 {
                                     <li class="nav-item">
-                                        <a class="" asp-area="" asp-controller="Authentication" asp-action="Logout">Se Déconnecter</a>
+                                        <a class="" asp-area="" asp-controller="Auth" asp-action="Logout">Se Déconnecter</a>
                                     </li>
-                                }
+                                } *@
                             </ul>
                         </div>
                     </div>
@@ -52,8 +59,10 @@
                         <div class="banner-text text-center">
                             <h1 class="white">HARMONIE SANTÉ PARAMÉDICAL</h1>
                             <p>Le paramédical depuis votre bureau.</p>
-                            <a href="~/Booking/Index" class="btn btn-appoint">Lister rendez-vous</a>
+                            @* <a href="~/Booking/Index" class="btn btn-appoint">Lister rendez-vous</a> *@
                             <a href="~/Praticien/Index" class="btn btn-appoint">Prendre rendez-vous</a>
+                            <a href="~/Rdv/Index" class="btn btn-appoint">voir rendez-vous</a>
+                          
                          </div>
                         <div class="overlay-detail text-center">
                             <a href="#service"><i class="fa fa-angle-down"></i></a>

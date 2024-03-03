@@ -52,15 +52,15 @@ public class RdvController : ControllerBase
 
         try
         {
-           
+
             //// Logique de réservation (vérification de disponibilité, etc.)
-            //if (!IsDayAvailable(rdv.Date))
-            //{
-            //    return BadRequest("La journée spécifiée n'est pas disponible pour la réservation.");
-            //}
+            if (!IsDayAvailable(rdv.Date))
+            {
+                return BadRequest("La journée spécifiée n'est pas disponible pour la réservation.");
+            }
 
             // Simulation d'une opération prenant moins d'une minute
-            await Task.Delay(TimeSpan.FromMinutes(0.5));
+            await Task.Delay(TimeSpan.FromSeconds(5));
 
             _context.Rdvs.Add(rdv);
             await _context.SaveChangesAsync();
@@ -72,6 +72,12 @@ public class RdvController : ControllerBase
             _doubleBookingSemaphore.Release();
             _reservationSemaphore.Release();
         }
+    }
+    private bool IsDayAvailable(DateTime date)
+    {
+        // Logique de vérification de disponibilité de la journée
+        // Par exemple, vérifier si la journée est déjà réservée
+        return !_context.Rdvs.Any(r => r.Date.Date == date.Date);
     }
 
 
@@ -116,14 +122,7 @@ public class RdvController : ControllerBase
 
         return NoContent();
     }
-
-
-    private bool IsDayAvailable(DateTime date)
-    {
-        // Logique de vérification de disponibilité de la journée
-        // Par exemple, vérifier si la journée est déjà réservée
-        return !_context.Rdvs.Any(r => r.Date.Date == date.Date);
-    }
+   
 }
 
 
