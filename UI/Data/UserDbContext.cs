@@ -1,6 +1,7 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using UI.Models;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using UI.Models;
+
 
 namespace UI.Data
 {
@@ -13,11 +14,9 @@ namespace UI.Data
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
-            builder.Entity<User>();
+          //  builder.Entity<User>();
         }
 
-        public DbSet<User> Users { get; set; }
-
-       
+       // public DbSet<User> Users { get; set; }
     }
 }

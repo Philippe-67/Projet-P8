@@ -5,8 +5,8 @@ namespace UI.Models
     public class Login
     {
         [Required]
-        public string Email { get; set; } = string.Empty;
+        public string Email { get; set; } 
         [Required]
-        public string Password { get; set; } = string.Empty;
+        public string Password { get; set; } 
     }
 }

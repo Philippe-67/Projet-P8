@@ -14,34 +14,39 @@ public class RdvController : Controller
         _httpClient.BaseAddress = new Uri("https://localhost:5001"); // Assurez-vous de mettre le bon port pour votre API Rdv
     }
 
-   
-    public async Task<IActionResult> Index(string nomPraticien,int praticienId,DateTime jourDisponible ,int? annee, int? mois)
+
+     public async Task<IActionResult> Index(string nomPraticien,int praticienId,DateTime jourDisponible ,int? annee, int? mois)
+  //  public async Task<IActionResult> Index(int? praticienId, DateTime jourDisponible, int? annee, int? mois)
     {
+        /// 1 Création d'un dictionnaire pour transmettre des données à la cue
         ViewData["NomPraticien"] = nomPraticien;
         ViewData["PraticienId"] =praticienId;
         ViewData["Date"] = jourDisponible;
       //  ViewData["AnneeSelectionnee"] = annee;
 
-        // Récupérer l'année et le mois actuels par défaut
+        ///////////////////////////////////////////////////////////////////////////////////////
+        ///         2 implémentation pour l'affichage d'un pseudo calendrier                ///
+        ///////////////////////////////////////////////////////////////////////////////////////
+        
+        // 2.1 Récupération de  l'année et le mois actuels par défaut
         int anneeActuelle = DateTime.Now.Year;
         int moisActuel = DateTime.Now.Month;
 
-        // Utiliser les valeurs fournies ou les valeurs actuelles par défaut
+        // 2.2 si l'utlisateur ne sélectionne pas d'année ou de mois spécifiques, utilisation des valeurs actuelles par défaut
         int anneeSelectionnee = annee ?? anneeActuelle;
         int moisSelectionne = mois ?? moisActuel;
 
-        // Remplir les listes d'années et de mois pour les menus déroulants
+        //  2.3 Instanciation d'une  listes d'années et d'une liste de mois 
         List<int> anneesDisponibles = Enumerable.Range(anneeActuelle, 10).ToList(); // 10 années à partir de l'année actuelle
         List<int> moisDisponibles = Enumerable.Range(1, 12).ToList(); // Les 12 mois
 
-        // Calculer le nombre de jours dans le mois sélectionné
-        //int nombreDeJoursDansMois = DateTime.DaysInMonth(anneeSelectionnee, moisSelectionne);
+        //  2.4 Calcul du nombre de jours dans le mois sélectionné
+                /// 2.4.1  prise en compte des années bissextiles
         int nombreDeJoursDansMois = moisSelectionne == 2 && EstBissextile(anneeSelectionnee) ? 29 : DateTime.DaysInMonth(anneeSelectionnee, moisSelectionne);
-
-
-        // Créer une liste de dates pour le mois sélectionné
-        List<DateTime> datesDuMois = new List<DateTime>();
-        // Créer une liste de dates  disponibles pour le mois sélectionné
+                /// 2.4.2 implémantation de la liste de date dans le mois sélectioné
+                List<DateTime> datesDuMois = new List<DateTime>();
+                //et
+                /// >>>>> 2.4.3 Création de la liste de dates  disponibles ("joursDiponibles") pour le mois sélectionné
         List<DateTime> joursDisponibles = new List<DateTime>();
 
         for (int jour = 1; jour <= nombreDeJoursDansMois; jour++)
@@ -51,12 +56,12 @@ public class RdvController : Controller
             joursDisponibles.Add(date);
         }
 
-        //  ViewBag.Rdvs = listeRdvs;
-
-        // Passer les données aux menus déroulants dans la vue
+       
+        //Ces ViewBag permettrons d'afficher dans la vue l'année et le mois selectionnés ainsi que le nombre de jours dans ce mois spécifique
         ViewBag.Annees = new SelectList(anneesDisponibles, anneeSelectionnee);
         ViewBag.Mois = new SelectList(moisDisponibles, moisSelectionne);
-        ViewBag.NombreDeJoursDansMois = nombreDeJoursDansMois;
+         ViewBag.NombreDeJoursDansMois = nombreDeJoursDansMois;
+  
 
 
         try
@@ -75,6 +80,8 @@ public class RdvController : Controller
                 {
                     listeRdvs = listeRdvs.Where(rdv => rdv.NomPraticien == nomPraticien).ToList();
                 }
+                // Filtrer les rendez-vous en fonction de praticienId s'il est spécifié
+
                 // Trier les rendez-vous par ordre chronologique
                 listeRdvs = listeRdvs.OrderBy(rdv => rdv.Date).ToList();
 
@@ -141,7 +148,7 @@ public class RdvController : Controller
                 Date = rdv.Date
             };
             // Ajoutez le message de confirmation à TempData
-            TempData["ConfirmationMessage"] = "Le rendez-vous a été enregistré avec succès.";
+            TempData["ConfirmationMessage"] = $"Votre rendez-vous du {model.Date} avec le docteur  {model.NomPraticien}, a été enregistré avec succès.";
 
             // Redirige vers l'action "Index" avec le modèle correct
             return RedirectToAction("Index", model);

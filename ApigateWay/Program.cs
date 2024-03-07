@@ -1,30 +1,4 @@
-//using Ocelot.DependencyInjection;
-//using Ocelot.Middleware;
 
-//var builder = WebApplication.CreateBuilder(args);
-//builder.Configuration.AddJsonFile("ocelot.json", optional: false, reloadOnChange: true);
-//builder.Services.AddOcelot(builder.Configuration);
-
-
-//var app = builder.Build();
-
-
-//if (app.Environment.IsDevelopment())
-//{
-//    app.UseDeveloperExceptionPage();
-//}
-
-//app.UseRouting();
-
-//app.UseEndpoints(endpoints =>
-//{
-//    endpoints.MapControllers();
-//});
-//// Ocelot
-//app.UseOcelot().Wait();
-
-
-//app.Run();
 
 using System.IO;
 using Microsoft.AspNetCore.Hosting;
@@ -32,6 +6,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Ocelot.DependencyInjection;
 using Ocelot.Middleware;
+using Ocelot.Values;
 
 namespace OcelotBasic
 {
@@ -53,6 +28,13 @@ namespace OcelotBasic
             })
             .ConfigureServices(s => {
                 s.AddOcelot();
+                // Configure your logging here
+                s.AddLogging(logging =>
+                {
+                    logging.ClearProviders();
+                    logging.AddConsole(); // Add console logging, you can add other providers as needed
+                                          // Add other logging providers here
+                });
             })
             .ConfigureLogging((hostingContext, logging) =>
             {

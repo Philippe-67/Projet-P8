@@ -10,7 +10,13 @@
           "Port": 5002
         }
       ],
-      "UpstreamHttpMethod": [ "Get" ]
+      "UpstreamHttpMethod": [ "Get" ],
+      "Logging": [
+        {
+          "LogLevel": "Debug",
+          "RouteName": "GetPraticien"
+        }
+      ]
     },
     {
       "DownstreamPathTemplate": "/api/rdv",
@@ -22,7 +28,13 @@
           "Port": 5001
         }
       ],
-      "UpstreamHttpMethod": [ "Get" ]
+      "UpstreamHttpMethod": [ "Get" ],
+      "Logging": [
+        {
+          "LogLevel": "Debug",
+          "RouteName": "GetRdv"
+        }
+      ]
     },
     {
       "DownstreamPathTemplate": "/api/rdv", // Ajoutez la route pour récupérer les rendez-vous du praticien
@@ -34,10 +46,15 @@
           "Port": 5001
         }
       ],
-      "UpstreamHttpMethod": [ "Post" ]
+      "UpstreamHttpMethod": [ "Post" ],
+      "Logging": [
+        {
+          "LogLevel": "Debug",
+          "RouteName": "PostRdv"
+        }
+      ]
     }
-    
-  ],
+    ],
   "GlobalConfiguration": {
     "BaseUrl": "https://localhost:5000"
   }

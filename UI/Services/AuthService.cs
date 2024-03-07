@@ -1,9 +1,9 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using UI.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using UI.AuthServices;
-using UI.Models;
+
 
 namespace UI.Services
 {
@@ -30,7 +30,7 @@ namespace UI.Services
             if (model.Password != model.PasswordConfirm)
             {
                 status.StatusCode = 0;
-                status.StatusMessage = "Confirm password doesn't match the password";
+                status.StatusMessage = "Confirm password doesn't math the password";
 
                 return status;
             }
@@ -45,13 +45,14 @@ namespace UI.Services
                 return status;
             }
 
-            User user = new User()
+            //User user = new User()****
+            IdentityUser user=new IdentityUser()
             {
                 Email = model.Email,
                 SecurityStamp = Guid.NewGuid().ToString(),
                 UserName = model.UserName,
-                FirstName = model.FirstName,
-                LastName = model.LastName,
+              //  FirstName = model.FirstName,
+              //  LastName = model.LastName,
                 EmailConfirmed = true,
                 PhoneNumberConfirmed = true,
             };
@@ -68,7 +69,7 @@ namespace UI.Services
 
             if (!await _roleManager.RoleExistsAsync(model.Role))
             {
-                await _roleManager.CreateAsync(new IdentityRole(model.Role));
+               await _roleManager.CreateAsync(new IdentityRole(model.Role));
             }
 
             if (await _roleManager.RoleExistsAsync(model.Role))
@@ -114,14 +115,14 @@ namespace UI.Services
                     new Claim(ClaimTypes.Name, user.UserName),
                 };
 
-                var jwtToken = CreateToken(user, userRoles);
+               // var jwtToken = CreateToken(user, userRoles);
 
-                foreach (var userRole in userRoles)
-                {
-                    authClaims.Add(new Claim(ClaimTypes.Role, userRole));
-                }
+               // foreach (var userRole in userRoles)
+                //{
+                //    authClaims.Add(new Claim(ClaimTypes.Role, userRole));
+                //}
 
-                status.Token = jwtToken;
+                //status.Token = jwtToken;
                 status.StatusCode = 1;
                 status.StatusMessage = "Logged in successfully";
             }
@@ -139,33 +140,33 @@ namespace UI.Services
             return status;
         }
 
-        private string CreateToken(IdentityUser user, IList<string> roles)
-        {
-            List<Claim> claims = new List<Claim>
-            {
-                new Claim(ClaimTypes.Name, user.UserName),
-                new Claim(ClaimTypes.Email, user.Email)
-            };
+        //private string CreateToken(IdentityUser user, IList<string> roles)
+        //{
+        //    List<Claim> claims = new List<Claim>
+        //    {
+        //        new Claim(ClaimTypes.Name, user.UserName),
+        //        new Claim(ClaimTypes.Email, user.Email)
+        //    };
 
-            foreach (var role in roles)
-            {
-                claims.Add(new Claim(ClaimTypes.Role, role));
-            }
+        //    foreach (var role in roles)
+        //    {
+        //        claims.Add(new Claim(ClaimTypes.Role, role));
+        //    }
 
-            var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(
-                _config.GetSection("JwtConfig:Secret").Value));
+        //    var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(
+        //        _config.GetSection("JwtConfig:Secret").Value));
 
-            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
+        //    var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
 
-            var token = new JwtSecurityToken(
-                claims: claims,
-                expires: DateTime.Now.AddSeconds(3600),
-                signingCredentials: creds);
+        //    var token = new JwtSecurityToken(
+        //        claims: claims,
+        //        expires: DateTime.Now.AddSeconds(3600),
+        //        signingCredentials: creds);
 
-            var jwt = new JwtSecurityTokenHandler().WriteToken(token);
+        //    var jwt = new JwtSecurityTokenHandler().WriteToken(token);
 
-            return jwt;
-        }
+        //    return jwt;
+        //}
 
         public async Task LogoutAsync()
         {

@@ -1,16 +1,15 @@
 ﻿using UI.Models;
-using UI.AuthServices;
+using UI.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-
 namespace UI.Controllers
 {
-    public class AuthController : Controller
+    public class AuthenticationController : Controller
     {
         private readonly IAuthService _authService;
 
-        public AuthController(IAuthService authService)
+        public AuthenticationController(IAuthService authService)
         {
             _authService = authService;
         }
@@ -21,7 +20,8 @@ namespace UI.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> RegisterAsync([FromBody] Register model)
+        //public async Task<IActionResult> RegisterAsync([FromBody] Register model)*
+            public async Task<IActionResult> RegisterAsync( Register model)
         {
             if (!ModelState.IsValid)
             {
@@ -49,26 +49,32 @@ namespace UI.Controllers
 
             var result = await _authService.LoginAsync(model);
 
-            var jwtToken = result.Token;
+          //  var jwtToken = result.Token;
 
-            if (result.StatusCode == 1 && jwtToken != string.Empty)
+            if (result.StatusCode == 1)// && jwtToken != string.Empty)
             {
-                return RedirectToAction("Index", "Home", new { token = jwtToken });
+                // Ajoutez des messages de débogage
+                Console.WriteLine("Connexion réussie. Redirection vers la page d'accueil.");
+
+                return RedirectToAction("Index", "Home");// new { token = jwtToken });*
             }
             else
             {
                 TempData["msg"] = result.StatusMessage;
+                // Ajoutez un message de débogage en cas d'échec de connexion
+                Console.WriteLine($"Échec de la connexion : {result.StatusMessage}");
 
                 return RedirectToAction(nameof(Login));
             }
         }
 
-        //[Authorize]
-        public async Task<IActionResult> Logout()
-        {
-            await _authService.LogoutAsync();
+        ////[Authorize]
+        //public async Task<IActionResult> Logout()
+        //{
+        //    await _authService.LogoutAsync();
 
-            return RedirectToAction(nameof(Login));
-        }
+        //    return RedirectToAction(nameof(Login));
+        //}
     }
 }
+
