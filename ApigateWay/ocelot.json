@@ -11,12 +11,10 @@
         }
       ],
       "UpstreamHttpMethod": [ "Get" ],
-      "Logging": [
-        {
-          "LogLevel": "Debug",
-          "RouteName": "GetPraticien"
-        }
-      ]
+      //"AuthenticationOptions": {
+      //  "AuthenticationProviderKey": [ "Bearer", "Secret" ],
+      //  "AllowedScopes": []
+      //}
     },
     {
       "DownstreamPathTemplate": "/api/rdv",

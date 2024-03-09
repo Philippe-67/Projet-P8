@@ -14,9 +14,9 @@ namespace UI.Data
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
-          //  builder.Entity<User>();
+         //builder.Entity<User>();
         }
 
-       // public DbSet<User> Users { get; set; }
+     //  public DbSet<User> Users { get; set; }
     }
 }

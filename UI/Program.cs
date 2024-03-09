@@ -2,12 +2,14 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using UI.Data;
 using UI.Services;
 
 var builder = WebApplication.CreateBuilder(args);
+
 // Add database connection
 var connectionString = builder.Configuration.GetConnectionString("Connection");
 builder.Services.AddDbContext<UserDbContext>(options =>
@@ -15,41 +17,44 @@ builder.Services.AddDbContext<UserDbContext>(options =>
 
 // Add identity
 builder.Services.AddIdentity<IdentityUser, IdentityRole>()
-    .AddEntityFrameworkStores<UserDbContext>();
-//    .AddDefaultTokenProviders();
+    .AddEntityFrameworkStores<UserDbContext>()
+    .AddDefaultTokenProviders(); /*** pour token ***/
+
+// add service pour authentication
 
 builder.Services.AddScoped<IAuthService, AuthService>();
 
 
 ////Mise en place de l'authentification
 
-builder.Services.AddAuthentication();
-//    .AddJwtBearer(options =>
-//    {
-//        options.TokenValidationParameters = new TokenValidationParameters
-//        {
-//            ValidateIssuer = true,
-//            ValidateAudience = true,
-//            RequireExpirationTime = true,
-//            ValidateLifetime = true,
-//            ValidateIssuerSigningKey = true,
-//            ValidIssuer = builder.Configuration.GetSection("JwtConfig:Issuer").Value,
-//            ValidAudience = builder.Configuration.GetSection("JwtConfig:Audience").Value,
-//            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8
-//                .GetBytes(builder.Configuration.GetSection("JwtConfig:Secret").Value))
-//        };
-//    });
+builder.Services.AddAuthentication( JwtBearerDefaults.AuthenticationScheme)/***/
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            RequireExpirationTime = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = builder.Configuration.GetSection("JwtConfig:Issuer").Value,
+            ValidAudience = builder.Configuration.GetSection("JwtConfig:Audience").Value,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8
+                .GetBytes(builder.Configuration.GetSection("JwtConfig:Secret").Value))
+        };
+    });
 
-// Add logging
-builder.Host.ConfigureLogging(logging =>
-{
-    logging.ClearProviders();
-    logging.AddConsole();
-});
+//// Add logging
+//builder.Host.ConfigureLogging(logging =>
+//{
+//    logging.ClearProviders();
+//    logging.AddConsole();
+//});
 
 
 
 builder.Services.AddHttpClient();
+
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();

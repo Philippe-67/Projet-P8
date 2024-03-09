@@ -30,7 +30,7 @@ namespace UI.Services
             if (model.Password != model.PasswordConfirm)
             {
                 status.StatusCode = 0;
-                status.StatusMessage = "Confirm password doesn't math the password";
+                status.StatusMessage = "Confirm password doesn't match the password";
 
                 return status;
             }
@@ -115,14 +115,14 @@ namespace UI.Services
                     new Claim(ClaimTypes.Name, user.UserName),
                 };
 
-               // var jwtToken = CreateToken(user, userRoles);
+                var jwtToken = GenerateToken(user, userRoles);
 
-               // foreach (var userRole in userRoles)
-                //{
-                //    authClaims.Add(new Claim(ClaimTypes.Role, userRole));
-                //}
+               foreach (var userRole in userRoles)
+                {
+                   authClaims.Add(new Claim(ClaimTypes.Role, userRole));
+                }
 
-                //status.Token = jwtToken;
+                status.Token = jwtToken;
                 status.StatusCode = 1;
                 status.StatusMessage = "Logged in successfully";
             }
@@ -140,33 +140,33 @@ namespace UI.Services
             return status;
         }
 
-        //private string CreateToken(IdentityUser user, IList<string> roles)
-        //{
-        //    List<Claim> claims = new List<Claim>
-        //    {
-        //        new Claim(ClaimTypes.Name, user.UserName),
-        //        new Claim(ClaimTypes.Email, user.Email)
-        //    };
+        private string GenerateToken(IdentityUser user, IList<string> roles)
+        {
+            List<Claim> claims = new List<Claim>
+          {
+               new Claim(ClaimTypes.Name, user.UserName),
+               new Claim(ClaimTypes.Email, user.Email)
+           };
 
-        //    foreach (var role in roles)
-        //    {
-        //        claims.Add(new Claim(ClaimTypes.Role, role));
-        //    }
+           foreach (var role in roles)
+           {
+                claims.Add(new Claim(ClaimTypes.Role, role));
+           }
 
-        //    var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(
-        //        _config.GetSection("JwtConfig:Secret").Value));
+            var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(
+              _config.GetSection("JwtConfig:Secret").Value));
 
-        //    var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
+          var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
 
-        //    var token = new JwtSecurityToken(
-        //        claims: claims,
-        //        expires: DateTime.Now.AddSeconds(3600),
-        //        signingCredentials: creds);
+            var token = new JwtSecurityToken(
+                claims: claims,
+                expires: DateTime.Now.AddSeconds(3600),
+                signingCredentials: creds);
 
-        //    var jwt = new JwtSecurityTokenHandler().WriteToken(token);
+            var jwt = new JwtSecurityTokenHandler().WriteToken(token);
 
-        //    return jwt;
-        //}
+            return jwt;
+        }
 
         public async Task LogoutAsync()
         {
